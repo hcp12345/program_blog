@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.UserMapper">
+    <select id="selectUserByNameAndPassword" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        where name = #{name,jdbcType=VARCHAR}
+        AND password = #{password,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectUserByMailboxAndPassword" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        where mailbox = #{mailbox,jdbcType=VARCHAR}
+        AND password = #{password,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectUserByName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        where name = #{name,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectUserByMailbox" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        where mailbox = #{mailbox,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getUserByCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from user
+        where code = #{code,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

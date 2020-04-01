@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.dao.FollowMapper" >
+  <resultMap id="BaseResultMap" type="com.example.model.Follow" >
+    <id column="follow_id" property="followId" jdbcType="VARCHAR" />
+    <result column="follow_person" property="followPerson" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="follow_date" property="followDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    follow_id, follow_person, user_id, follow_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from follow
+    where follow_id = #{followId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from follow
+    where follow_id = #{followId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.model.Follow" >
+    insert into follow (follow_id, follow_person, user_id, 
+      follow_date)
+    values (#{followId,jdbcType=VARCHAR}, #{followPerson,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{followDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.model.Follow" >
+    insert into follow
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="followId != null" >
+        follow_id,
+      </if>
+      <if test="followPerson != null" >
+        follow_person,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="followDate != null" >
+        follow_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="followId != null" >
+        #{followId,jdbcType=VARCHAR},
+      </if>
+      <if test="followPerson != null" >
+        #{followPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="followDate != null" >
+        #{followDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.model.Follow" >
+    update follow
+    <set >
+      <if test="followPerson != null" >
+        follow_person = #{followPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="followDate != null" >
+        follow_date = #{followDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where follow_id = #{followId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.model.Follow" >
+    update follow
+    set follow_person = #{followPerson,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      follow_date = #{followDate,jdbcType=TIMESTAMP}
+    where follow_id = #{followId,jdbcType=VARCHAR}
+  </update>
+</mapper>

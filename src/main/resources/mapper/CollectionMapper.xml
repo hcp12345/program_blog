@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.dao.CollectionMapper" >
+  <resultMap id="BaseResultMap" type="com.example.model.Collection" >
+    <id column="collection_id" property="collectionId" jdbcType="VARCHAR" />
+    <result column="article_id" property="articleId" jdbcType="VARCHAR" />
+    <result column="collection_person" property="collectionPerson" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="collection_date" property="collectionDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    collection_id, article_id, collection_person, user_id, collection_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from collection
+    where collection_id = #{collectionId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from collection
+    where collection_id = #{collectionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.model.Collection" >
+    insert into collection (collection_id, article_id, collection_person, 
+      user_id, collection_date)
+    values (#{collectionId,jdbcType=VARCHAR}, #{articleId,jdbcType=VARCHAR}, #{collectionPerson,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{collectionDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.model.Collection" >
+    insert into collection
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="collectionId != null" >
+        collection_id,
+      </if>
+      <if test="articleId != null" >
+        article_id,
+      </if>
+      <if test="collectionPerson != null" >
+        collection_person,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="collectionDate != null" >
+        collection_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="collectionId != null" >
+        #{collectionId,jdbcType=VARCHAR},
+      </if>
+      <if test="articleId != null" >
+        #{articleId,jdbcType=VARCHAR},
+      </if>
+      <if test="collectionPerson != null" >
+        #{collectionPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="collectionDate != null" >
+        #{collectionDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.model.Collection" >
+    update collection
+    <set >
+      <if test="articleId != null" >
+        article_id = #{articleId,jdbcType=VARCHAR},
+      </if>
+      <if test="collectionPerson != null" >
+        collection_person = #{collectionPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="collectionDate != null" >
+        collection_date = #{collectionDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where collection_id = #{collectionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.model.Collection" >
+    update collection
+    set article_id = #{articleId,jdbcType=VARCHAR},
+      collection_person = #{collectionPerson,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      collection_date = #{collectionDate,jdbcType=TIMESTAMP}
+    where collection_id = #{collectionId,jdbcType=VARCHAR}
+  </update>
+</mapper>

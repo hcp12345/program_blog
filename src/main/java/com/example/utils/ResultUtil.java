@@ -5,7 +5,7 @@ import com.example.dto.MessageBean;
 /**
  * Created by hcp on 2020/3/6.
  */
-public class ResultUtils {
+public class ResultUtil {
 
     private final static Integer CODE_SUCCESS = 200;         //请求成功代码
 
@@ -60,16 +60,16 @@ public class ResultUtils {
      * @return
      */
     public static MessageBean failureFront(String message ,Object data){
-        return common(VALID_FAILURE,message,data);
+        return common(CODE_FAILURE_FRONT,message,data);
     }
     public static MessageBean failureFront(String message){
-        return  success(message,null);
+        return  failureFront(message,null);
     }
     public static MessageBean failureFront(Object data){
-        return  success(MSG_FAILURE_FRONT,data);
+        return  failureFront(MSG_FAILURE_FRONT,data);
     }
     public static MessageBean failureFront(){
-        return  success(MSG_FAILURE_FRONT,null);
+        return  failureFront(MSG_FAILURE_FRONT,null);
     }
 
 
@@ -83,13 +83,32 @@ public class ResultUtils {
         return common(CODE_FAILURE_BACK,message,data);
     }
     public static MessageBean failureBack(String message){
-        return  success(message,null);
+        return  failureBack(message,null);
     }
     public static MessageBean failureBack(Object data){
-        return  success(MSG_FAILURE_BACK,data);
+        return  failureBack(MSG_FAILURE_BACK,data);
     }
     public static MessageBean failureBack(){
-        return  success(MSG_FAILURE_BACK,null);
+        return  failureBack(MSG_FAILURE_BACK,null);
+    }
+
+    /**
+     * 正常错误
+     * @param message 消息
+     * @param data 数据
+     * @return
+     */
+    public static MessageBean failure(String message ,Object data){
+        return common(VALID_FAILURE,message,data);
+    }
+    public static MessageBean failure(String message ){
+        return failure(message,null);
+    }
+    public static MessageBean failure(Object data){
+        return  failure(MSG_VALID_FAILURE,data);
+    }
+    public static MessageBean failure(){
+        return  failure(MSG_VALID_FAILURE,null);
     }
 
 }

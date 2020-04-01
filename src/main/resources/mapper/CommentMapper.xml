@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.CommentMapper">
+  <resultMap id="BaseResultMap" type="com.example.model.Comment">
+    <id column="comment_id" jdbcType="VARCHAR" property="commentId" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="article_id" jdbcType="VARCHAR" property="articleId" />
+    <result column="comment_person" jdbcType="VARCHAR" property="commentPerson" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="comment_object" jdbcType="VARCHAR" property="commentObject" />
+    <result column="comment_goods" jdbcType="INTEGER" property="commentGoods" />
+    <result column="comment_date" jdbcType="TIMESTAMP" property="commentDate" />
+    <result column="comment_tag" jdbcType="VARCHAR" property="commentTag" />
+    <result column="comment_counts" jdbcType="INTEGER" property="commentCounts" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    comment_id, comment, article_id, comment_person, user_name, nick_name, comment_object, 
+    comment_goods, comment_date, comment_tag, comment_counts, user_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from comment
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from comment
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.model.Comment">
+    insert into comment (comment_id, comment, article_id, 
+      comment_person, user_name, nick_name, 
+      comment_object, comment_goods, comment_date, 
+      comment_tag, comment_counts, user_id
+      )
+    values (#{commentId,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, #{articleId,jdbcType=VARCHAR}, 
+      #{commentPerson,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
+      #{commentObject,jdbcType=VARCHAR}, #{commentGoods,jdbcType=INTEGER}, #{commentDate,jdbcType=TIMESTAMP}, 
+      #{commentTag,jdbcType=VARCHAR}, #{commentCounts,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.model.Comment">
+    insert into comment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        comment_id,
+      </if>
+      <if test="comment != null">
+        comment,
+      </if>
+      <if test="articleId != null">
+        article_id,
+      </if>
+      <if test="commentPerson != null">
+        comment_person,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="nickName != null">
+        nick_name,
+      </if>
+      <if test="commentObject != null">
+        comment_object,
+      </if>
+      <if test="commentGoods != null">
+        comment_goods,
+      </if>
+      <if test="commentDate != null">
+        comment_date,
+      </if>
+      <if test="commentTag != null">
+        comment_tag,
+      </if>
+      <if test="commentCounts != null">
+        comment_counts,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commentId != null">
+        #{commentId,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="articleId != null">
+        #{articleId,jdbcType=VARCHAR},
+      </if>
+      <if test="commentPerson != null">
+        #{commentPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="commentObject != null">
+        #{commentObject,jdbcType=VARCHAR},
+      </if>
+      <if test="commentGoods != null">
+        #{commentGoods,jdbcType=INTEGER},
+      </if>
+      <if test="commentDate != null">
+        #{commentDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="commentTag != null">
+        #{commentTag,jdbcType=VARCHAR},
+      </if>
+      <if test="commentCounts != null">
+        #{commentCounts,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.model.Comment">
+    update comment
+    <set>
+      <if test="comment != null">
+        comment = #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="articleId != null">
+        article_id = #{articleId,jdbcType=VARCHAR},
+      </if>
+      <if test="commentPerson != null">
+        comment_person = #{commentPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="commentObject != null">
+        comment_object = #{commentObject,jdbcType=VARCHAR},
+      </if>
+      <if test="commentGoods != null">
+        comment_goods = #{commentGoods,jdbcType=INTEGER},
+      </if>
+      <if test="commentDate != null">
+        comment_date = #{commentDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="commentTag != null">
+        comment_tag = #{commentTag,jdbcType=VARCHAR},
+      </if>
+      <if test="commentCounts != null">
+        comment_counts = #{commentCounts,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.model.Comment">
+    update comment
+    set comment = #{comment,jdbcType=VARCHAR},
+      article_id = #{articleId,jdbcType=VARCHAR},
+      comment_person = #{commentPerson,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      comment_object = #{commentObject,jdbcType=VARCHAR},
+      comment_goods = #{commentGoods,jdbcType=INTEGER},
+      comment_date = #{commentDate,jdbcType=TIMESTAMP},
+      comment_tag = #{commentTag,jdbcType=VARCHAR},
+      comment_counts = #{commentCounts,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=VARCHAR}
+    where comment_id = #{commentId,jdbcType=VARCHAR}
+  </update>
+</mapper>

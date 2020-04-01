@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.dao.NoticeMapper" >
+  <resultMap id="BaseResultMap" type="com.example.model.Notice" >
+    <id column="notice_id" property="noticeId" jdbcType="VARCHAR" />
+    <result column="notice_tag" property="noticeTag" jdbcType="VARCHAR" />
+    <result column="notice" property="notice" jdbcType="VARCHAR" />
+    <result column="notice_person" property="noticePerson" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="notice_date" property="noticeDate" jdbcType="TIMESTAMP" />
+    <result column="notice_type" property="noticeType" jdbcType="VARCHAR" />
+    <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    notice_id, notice_tag, notice, notice_person, user_id, notice_date, notice_type, 
+    target_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from notice
+    where notice_id = #{noticeId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from notice
+    where notice_id = #{noticeId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.model.Notice" >
+    insert into notice (notice_id, notice_tag, notice, 
+      notice_person, user_id, notice_date, 
+      notice_type, target_id)
+    values (#{noticeId,jdbcType=VARCHAR}, #{noticeTag,jdbcType=VARCHAR}, #{notice,jdbcType=VARCHAR}, 
+      #{noticePerson,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{noticeDate,jdbcType=TIMESTAMP}, 
+      #{noticeType,jdbcType=VARCHAR}, #{targetId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.model.Notice" >
+    insert into notice
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="noticeId != null" >
+        notice_id,
+      </if>
+      <if test="noticeTag != null" >
+        notice_tag,
+      </if>
+      <if test="notice != null" >
+        notice,
+      </if>
+      <if test="noticePerson != null" >
+        notice_person,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="noticeDate != null" >
+        notice_date,
+      </if>
+      <if test="noticeType != null" >
+        notice_type,
+      </if>
+      <if test="targetId != null" >
+        target_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="noticeId != null" >
+        #{noticeId,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeTag != null" >
+        #{noticeTag,jdbcType=VARCHAR},
+      </if>
+      <if test="notice != null" >
+        #{notice,jdbcType=VARCHAR},
+      </if>
+      <if test="noticePerson != null" >
+        #{noticePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeDate != null" >
+        #{noticeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="noticeType != null" >
+        #{noticeType,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        #{targetId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.model.Notice" >
+    update notice
+    <set >
+      <if test="noticeTag != null" >
+        notice_tag = #{noticeTag,jdbcType=VARCHAR},
+      </if>
+      <if test="notice != null" >
+        notice = #{notice,jdbcType=VARCHAR},
+      </if>
+      <if test="noticePerson != null" >
+        notice_person = #{noticePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeDate != null" >
+        notice_date = #{noticeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="noticeType != null" >
+        notice_type = #{noticeType,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where notice_id = #{noticeId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.model.Notice" >
+    update notice
+    set notice_tag = #{noticeTag,jdbcType=VARCHAR},
+      notice = #{notice,jdbcType=VARCHAR},
+      notice_person = #{noticePerson,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      notice_date = #{noticeDate,jdbcType=TIMESTAMP},
+      notice_type = #{noticeType,jdbcType=VARCHAR},
+      target_id = #{targetId,jdbcType=VARCHAR}
+    where notice_id = #{noticeId,jdbcType=VARCHAR}
+  </update>
+</mapper>

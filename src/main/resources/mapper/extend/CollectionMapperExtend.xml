@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.dao.CollectionMapper" >
+    <select id="findCollectionByCollectionPerson" resultMap="BaseResultMap" >
+        select
+          <include refid="Base_Column_List" />
+        FROM collection WHERE collection_person=#{collectionPerson}
+        ORDER BY collection_date DESC
+    </select>
+
+    <select id="findCollectionByCollectionPersonAndArticleId" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        FROM collection
+        WHERE collection_person=#{collectionPerson}
+        AND article_id = #{articleId}
+    </select>
+</mapper>

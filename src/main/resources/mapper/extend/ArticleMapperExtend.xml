@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.dao.ArticleMapper" >
+    <select id="selectArticleByArticleName" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from article
+        where article_name = #{articleName}
+    </select>
+
+    <select id="findArticlesByTypeAndTag" resultMap="ResultMapWithBLOBs" >
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        FROM article WHERE 1 = 1
+        <if test="type != null">
+            AND type=#{type}
+        </if>
+        <if test="articleTag != null">
+            AND article_tag=#{articleTag}
+        </if>
+        ORDER BY article_date DESC
+    </select>
+
+    <select id="findPopularArticles" resultMap="ResultMapWithBLOBs" >
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        FROM article WHERE 1 = 1
+        <if test="articleTag != null">
+            AND article_tag=#{articleTag}
+        </if>
+        ORDER BY article_views DESC
+    </select>
+
+    <select id="findArticleByUserId" resultMap="ResultMapWithBLOBs" >
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        FROM article WHERE user_id=#{userId}
+        ORDER BY article_date DESC
+    </select>
+</mapper>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.ArticleMapper">
+  <resultMap id="BaseResultMap" type="com.example.model.Article">
+    <id column="article_id" jdbcType="VARCHAR" property="articleId" />
+    <result column="article_name" jdbcType="VARCHAR" property="articleName" />
+    <result column="article_good" jdbcType="INTEGER" property="articleGood" />
+    <result column="article_follows" jdbcType="INTEGER" property="articleFollows" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="article_tag" jdbcType="VARCHAR" property="articleTag" />
+    <result column="article_cover" jdbcType="VARCHAR" property="articleCover" />
+    <result column="article_date" jdbcType="TIMESTAMP" property="articleDate" />
+    <result column="article_views" jdbcType="INTEGER" property="articleViews" />
+    <result column="article_comment" jdbcType="INTEGER" property="articleComment" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.example.model.Article">
+    <result column="article" jdbcType="LONGVARCHAR" property="article" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    article_id, article_name, article_good, article_follows, user_id, type, article_tag, 
+    article_cover, article_date, article_views, article_comment
+  </sql>
+  <sql id="Blob_Column_List">
+    article
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from article
+    where article_id = #{articleId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from article
+    where article_id = #{articleId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.model.Article">
+    insert into article (article_id, article_name, article_good, 
+      article_follows, user_id, type, 
+      article_tag, article_cover, article_date, 
+      article_views, article_comment, article
+      )
+    values (#{articleId,jdbcType=VARCHAR}, #{articleName,jdbcType=VARCHAR}, #{articleGood,jdbcType=INTEGER}, 
+      #{articleFollows,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{articleTag,jdbcType=VARCHAR}, #{articleCover,jdbcType=VARCHAR}, #{articleDate,jdbcType=TIMESTAMP}, 
+      #{articleViews,jdbcType=INTEGER}, #{articleComment,jdbcType=INTEGER}, #{article,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.model.Article">
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="articleId != null">
+        article_id,
+      </if>
+      <if test="articleName != null">
+        article_name,
+      </if>
+      <if test="articleGood != null">
+        article_good,
+      </if>
+      <if test="articleFollows != null">
+        article_follows,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="articleTag != null">
+        article_tag,
+      </if>
+      <if test="articleCover != null">
+        article_cover,
+      </if>
+      <if test="articleDate != null">
+        article_date,
+      </if>
+      <if test="articleViews != null">
+        article_views,
+      </if>
+      <if test="articleComment != null">
+        article_comment,
+      </if>
+      <if test="article != null">
+        article,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="articleId != null">
+        #{articleId,jdbcType=VARCHAR},
+      </if>
+      <if test="articleName != null">
+        #{articleName,jdbcType=VARCHAR},
+      </if>
+      <if test="articleGood != null">
+        #{articleGood,jdbcType=INTEGER},
+      </if>
+      <if test="articleFollows != null">
+        #{articleFollows,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="articleTag != null">
+        #{articleTag,jdbcType=VARCHAR},
+      </if>
+      <if test="articleCover != null">
+        #{articleCover,jdbcType=VARCHAR},
+      </if>
+      <if test="articleDate != null">
+        #{articleDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleViews != null">
+        #{articleViews,jdbcType=INTEGER},
+      </if>
+      <if test="articleComment != null">
+        #{articleComment,jdbcType=INTEGER},
+      </if>
+      <if test="article != null">
+        #{article,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.model.Article">
+    update article
+    <set>
+      <if test="articleName != null">
+        article_name = #{articleName,jdbcType=VARCHAR},
+      </if>
+      <if test="articleGood != null">
+        article_good = #{articleGood,jdbcType=INTEGER},
+      </if>
+      <if test="articleFollows != null">
+        article_follows = #{articleFollows,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="articleTag != null">
+        article_tag = #{articleTag,jdbcType=VARCHAR},
+      </if>
+      <if test="articleCover != null">
+        article_cover = #{articleCover,jdbcType=VARCHAR},
+      </if>
+      <if test="articleDate != null">
+        article_date = #{articleDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleViews != null">
+        article_views = #{articleViews,jdbcType=INTEGER},
+      </if>
+      <if test="articleComment != null">
+        article_comment = #{articleComment,jdbcType=INTEGER},
+      </if>
+      <if test="article != null">
+        article = #{article,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where article_id = #{articleId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.example.model.Article">
+    update article
+    set article_name = #{articleName,jdbcType=VARCHAR},
+      article_good = #{articleGood,jdbcType=INTEGER},
+      article_follows = #{articleFollows,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      article_tag = #{articleTag,jdbcType=VARCHAR},
+      article_cover = #{articleCover,jdbcType=VARCHAR},
+      article_date = #{articleDate,jdbcType=TIMESTAMP},
+      article_views = #{articleViews,jdbcType=INTEGER},
+      article_comment = #{articleComment,jdbcType=INTEGER},
+      article = #{article,jdbcType=LONGVARCHAR}
+    where article_id = #{articleId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.model.Article">
+    update article
+    set article_name = #{articleName,jdbcType=VARCHAR},
+      article_good = #{articleGood,jdbcType=INTEGER},
+      article_follows = #{articleFollows,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      article_tag = #{articleTag,jdbcType=VARCHAR},
+      article_cover = #{articleCover,jdbcType=VARCHAR},
+      article_date = #{articleDate,jdbcType=TIMESTAMP},
+      article_views = #{articleViews,jdbcType=INTEGER},
+      article_comment = #{articleComment,jdbcType=INTEGER}
+    where article_id = #{articleId,jdbcType=VARCHAR}
+  </update>
+</mapper>
