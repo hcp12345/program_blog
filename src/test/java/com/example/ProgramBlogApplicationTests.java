@@ -39,7 +39,7 @@ public class ProgramBlogApplicationTests {
 	public void test2() throws Exception{
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true);
-		helper.setSubject("今晚开会");
+		helper.setSubject("今晚开会了");
 		helper.setText("大家，好！<br> &nbsp;&nbsp;<b style='color:red'>今晚7:30在教学楼201开班委会，请各位班委准时参加！</b> <br>谢谢！",true);
 		helper.setTo("2934819354@qq.com");
 		helper.setFrom("3132857267@qq.com");
