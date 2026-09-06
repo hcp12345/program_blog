@@ -1,0 +1,109 @@
+# ==================== Node.js ====================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ==================== 后端 (Egg.js) ====================
+# Egg.js 默认目录
+log/
+run/
+tmp/
+.cache/
+
+# 测试覆盖率
+coverage/
+.nyc_output/
+*.lcov
+
+# 配置文件
+.env
+.env.*.local
+.env.*.local.*
+
+# ==================== 前端 (React + Vite) ====================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# ==================== IDE 和编辑器 ====================
+# VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# WebStorm / IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*.un~
+*~
+
+# ==================== 操作系统 ====================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+
+# Linux
+*~
+.fuse_hidden*
+
+# ==================== 临时文件 ====================
+*.tmp
+*.temp
+*.temp.*
+*.bak
+*.backup
+*.old
+*.swp
+
+# ==================== 数据库 ====================
+*.db
+*.sqlite
+*.sqlite3
+*.sql.backup
+
+# ==================== 构建产物 ====================
+dist/
+build/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+
+# ==================== 其他 ====================
+# 日志文件
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 依赖缓存
+node_modules/
+.npm/
+.eslintcache
