@@ -55,12 +55,27 @@ cd frontend && npm run dev  # 前端，vite，端口 3000
 
 ## 4. 环境变量
 
+### 后端（支持环境变量注入，Docker 部署时由 docker-compose 传入）
+
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `DB_HOST` / `DB_PORT` | `localhost` / `3306` | MySQL 地址（容器内为服务名 `db`） |
+| `DB_NAME` / `DB_USER` / `DB_PASSWORD` | `md_me_blog` / `root` / `123456` | 数据库名与账号密码 |
+| `PORT` | `7001` | 后端监听端口 |
+| `APP_KEYS` | 开发默认值 | Egg cookie 签名密钥（生产必填） |
+| `JWT_SECRET` | 开发默认值 | JWT 签名密钥（生产必填） |
+| `ZHIPU_API_KEY` | 空 | 智谱开放平台 API Key，AI 智能客服必填；未设置时对话返回「智能客服尚未配置」 |
+| `LLM_BASE_URL` | `https://open.bigmodel.cn/api/paas/v4` | 智谱 OpenAI 兼容端点；切通义千问改为 `https://dashscope.aliyuncs.com/compatible-mode/v1` |
+| `LLM_MODEL` | `glm-4-flash` | 模型名（免费模型，支持工具调用） |
+| `EGG_WORKERS` | — | worker 进程数（Docker 中默认 1） |
+
+> 本地开发也可以把密钥写进 `config/config.local.js`（仅 `env=local` 时加载，已在 .gitignore 忽略，不会被提交）。
+
+### 前端
+
 | 变量 | 说明 |
 | --- | --- |
-| `VITE_API_URL` | 前端（`frontend/.env`）：后端 API 地址；不设置时使用 `/api/v1` 相对路径（开发环境由 Vite 代理转发） |
-| `ZHIPU_API_KEY` | **后端**：智谱开放平台 API Key，AI 智能客服必填；未设置时对话接口返回「智能客服尚未配置」 |
-| `LLM_BASE_URL` | 可选，默认 `https://open.bigmodel.cn/api/paas/v4`（智谱 OpenAI 兼容端点）；切通义千问改为 `https://dashscope.aliyuncs.com/compatible-mode/v1` |
-| `LLM_MODEL` | 可选，默认 `glm-4-flash`（免费模型，支持工具调用） |
+| `VITE_API_URL` | （`frontend/.env`）后端 API 地址；不设置时使用 `/api/v1` 相对路径（开发环境由 Vite 代理转发，生产环境由 Nginx 反向代理） |
 
 ## 5. 常用命令速查
 
@@ -76,8 +91,9 @@ cd frontend && npm run dev  # 前端，vite，端口 3000
 | `npm run test:local` | 仅运行 Egg 测试（egg-bin test） |
 | `npm run cov` | 覆盖率测试 |
 | `npm run ci` | lint + 覆盖率 |
-| `npm start` | 生产模式守护进程启动（egg-scripts） |
-| `npm run stop` | 停止生产守护进程 |
+| `npm start` | 生产模式启动（egg-scripts 前台控制台，日志直接输出） |
+| `npm run start:daemon` | 后台守护模式启动（日志写入 `logs/`） |
+| `npm run stop` | 停止后台守护实例 |
 
 ### 前端（frontend/）
 
@@ -95,7 +111,7 @@ cd frontend && npm run dev  # 前端，vite，端口 3000
 1. `app/model/` 创建/修改 Sequelize 模型（含 `associate` 关联）；
 2. `app/controller/` 创建控制器，方法命名遵循 RESTful 约定（`index` / `show` / `create` / `update` / `destroy`）；
 3. `config/router.js` 注册路由，注意**固定路径要放在 `:id` 这类参数路径之前**；
-4. 逻辑复杂时抽到 `app/service/`（当前项目尚无 service 层）。
+4. 逻辑复杂时抽到 `app/service/`（如 AI 客服的 `agent.js` / `agentTools.js`）。
 
 ### 前端新增功能
 
@@ -110,11 +126,21 @@ cd frontend && npm run dev  # 前端，vite，端口 3000
 
 ## 7. 生产部署
 
-### 后端
+### 🐳 Docker 一键部署（推荐）
 
 ```bash
-npm start   # egg-scripts 以守护进程启动，默认端口 7001
-npm run stop
+cp .env.example .env        # 修改 DB_PASSWORD / APP_KEYS / JWT_SECRET / ZHIPU_API_KEY
+docker compose up -d --build
+```
+
+一键启动 MySQL + 后端 + 前端，详见 [Docker 部署指南](./docker.md)。
+
+### 后端部署（非 Docker）
+
+```bash
+npm start             # egg-scripts 启动（前台控制台模式，日志直接可见）
+npm run start:daemon  # 需要后台常驻时使用
+npm run stop          # 停止后台实例
 ```
 
 上线前务必检查：
@@ -172,3 +198,5 @@ server {
 ### 历史修复记录
 
 - **管理员无法登录（已修复）**：`init-db.js` 原先写入明文密码，而登录接口使用 `bcrypt.compare` 校验，导致 admin 登录失败。现已改为写入 bcrypt 哈希；登录接口同时兼容旧明文密码并在首次成功登录后自动升级为哈希。
+- **`database.sql` 时间戳列名不一致（已修复）**：旧表原使用 `created_at` / `updated_at` 下划线命名，与 Sequelize 的 `underscored: false` 不符，用它初始化的库会报 `Unknown column 'Article.createdAt'`。现已统一为 `createdAt` / `updatedAt` 并补齐初始数据，可直接用于 Docker 初始化。
+- **写接口未强制鉴权（已修复）**：`jwt_auth` 中间件此前只解析不拦截，现已对非白名单写操作返回 401。

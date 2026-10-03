@@ -1,30 +1,30 @@
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 
+// 数据库连接配置（支持环境变量，便于 Docker / CI 复用）
+const DB = {
+  host: process.env.DB_HOST || 'localhost',
+  port: Number(process.env.DB_PORT || 3306),
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '123456',
+};
+const DB_NAME = process.env.DB_NAME || 'md_me_blog';
+
 async function initDatabase() {
   // 先创建数据库
-  let connection = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '123456',
-  });
+  let connection = await mysql.createConnection({ ...DB });
 
   try {
     console.log('连接数据库成功...');
 
     // 创建数据库
-    await connection.execute('CREATE DATABASE IF NOT EXISTS md_me_blog CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+    await connection.execute(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
     console.log('数据库创建成功');
 
     await connection.end();
 
     // 重新连接，使用指定数据库
-    connection = await mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: '123456',
-      database: 'md_me_blog',
-    });
+    connection = await mysql.createConnection({ ...DB, database: DB_NAME });
 
     // 创建表
     const tables = [

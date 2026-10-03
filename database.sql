@@ -1,3 +1,14 @@
+-- ============================================================
+-- MD Blog 数据库初始化脚本（MySQL 8.0+）
+-- ------------------------------------------------------------
+-- 字符集：utf8mb4 / utf8mb4_unicode_ci
+-- 时间戳：Sequelize 模型使用 camelCase（define.underscored = false），
+--         因此所有表的时间戳列统一为 createdAt / updatedAt。
+-- Docker：docker-compose 会把本文件挂载到 MySQL 容器的
+--         /docker-entrypoint-initdb.d，仅在数据卷「首次初始化」时执行。
+-- 手动执行：mysql -uroot -p < database.sql
+-- ============================================================
+
 -- 创建数据库
 CREATE DATABASE IF NOT EXISTS `md_me_blog` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -6,55 +17,57 @@ USE `md_me_blog`;
 -- 用户表
 CREATE TABLE IF NOT EXISTS `users` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(50) NOT NULL UNIQUE,
-  `email` VARCHAR(100) NOT NULL UNIQUE,
+  `username` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
   `password` VARCHAR(200) NOT NULL,
   `nickname` VARCHAR(50) DEFAULT NULL,
   `avatar` VARCHAR(200) DEFAULT NULL,
   `bio` VARCHAR(500) DEFAULT NULL,
   `role` VARCHAR(20) NOT NULL DEFAULT 'user',
-  `created_at` DATETIME DEFAULT NULL,
-  `updated_at` DATETIME DEFAULT NULL,
+  `createdAt` DATETIME DEFAULT NULL,
+  `updatedAt` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `username` (`username`),
-  KEY `email` (`email`)
+  UNIQUE KEY `uk_users_username` (`username`),
+  UNIQUE KEY `uk_users_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 分类表
 CREATE TABLE IF NOT EXISTS `categories` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) NOT NULL UNIQUE,
-  `slug` VARCHAR(50) NOT NULL UNIQUE,
+  `name` VARCHAR(50) NOT NULL,
+  `slug` VARCHAR(50) NOT NULL,
   `description` VARCHAR(500) DEFAULT NULL,
   `icon` VARCHAR(100) DEFAULT NULL,
   `parentId` INT(11) DEFAULT NULL,
   `sort` INT(11) DEFAULT 0,
-  `created_at` DATETIME DEFAULT NULL,
-  `updated_at` DATETIME DEFAULT NULL,
+  `createdAt` DATETIME DEFAULT NULL,
+  `updatedAt` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `slug` (`slug`),
+  UNIQUE KEY `uk_categories_name` (`name`),
+  UNIQUE KEY `uk_categories_slug` (`slug`),
   KEY `parentId` (`parentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 标签表
 CREATE TABLE IF NOT EXISTS `tags` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) NOT NULL UNIQUE,
-  `slug` VARCHAR(50) NOT NULL UNIQUE,
+  `name` VARCHAR(50) NOT NULL,
+  `slug` VARCHAR(50) NOT NULL,
   `description` VARCHAR(500) DEFAULT NULL,
   `color` VARCHAR(20) DEFAULT NULL,
   `articleCount` INT(11) DEFAULT 0,
-  `created_at` DATETIME DEFAULT NULL,
-  `updated_at` DATETIME DEFAULT NULL,
+  `createdAt` DATETIME DEFAULT NULL,
+  `updatedAt` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `slug` (`slug`)
+  UNIQUE KEY `uk_tags_name` (`name`),
+  UNIQUE KEY `uk_tags_slug` (`slug`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 文章表
 CREATE TABLE IF NOT EXISTS `articles` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(200) NOT NULL,
-  `slug` VARCHAR(200) NOT NULL UNIQUE,
+  `slug` VARCHAR(200) NOT NULL,
   `content` TEXT NOT NULL,
   `htmlContent` TEXT DEFAULT NULL,
   `excerpt` VARCHAR(500) DEFAULT NULL,
@@ -66,13 +79,13 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `isTop` TINYINT(1) DEFAULT 0,
   `categoryId` INT(11) DEFAULT NULL,
   `authorId` INT(11) NOT NULL,
-  `created_at` DATETIME DEFAULT NULL,
-  `updated_at` DATETIME DEFAULT NULL,
+  `createdAt` DATETIME DEFAULT NULL,
+  `updatedAt` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `slug` (`slug`),
+  UNIQUE KEY `uk_articles_slug` (`slug`),
   KEY `status` (`status`),
   KEY `categoryId` (`categoryId`),
-  KEY `created_at` (`created_at`)
+  KEY `createdAt` (`createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 评论表
@@ -88,36 +101,41 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `articleId` INT(11) NOT NULL,
   `status` VARCHAR(20) NOT NULL DEFAULT 'pending',
   `likeCount` INT(11) DEFAULT 0,
-  `created_at` DATETIME DEFAULT NULL,
-  `updated_at` DATETIME DEFAULT NULL,
+  `createdAt` DATETIME DEFAULT NULL,
+  `updatedAt` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `articleId` (`articleId`),
   KEY `status` (`status`),
   KEY `parentId` (`parentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 文章标签关联表
+-- 文章标签关联表（多对多）
 CREATE TABLE IF NOT EXISTS `article_tags` (
   `articleId` INT(11) NOT NULL,
   `tagId` INT(11) NOT NULL,
-  `created_at` DATETIME DEFAULT NULL,
+  `createdAt` DATETIME DEFAULT NULL,
+  `updatedAt` DATETIME DEFAULT NULL,
   PRIMARY KEY (`articleId`, `tagId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 插入默认管理员用户（密码: admin123，需要加密）
--- 注意：实际使用时应该使用 bcrypt 等加密
+-- ============================================================
+-- 初始数据
+-- ============================================================
+
+-- 默认管理员（用户名 admin / 密码 admin123）
+-- 密码为 bcrypt 哈希，与后端登录接口的 bcrypt.compare 一致
 INSERT INTO `users` (`username`, `email`, `password`, `nickname`, `role`) VALUES
-('admin', 'admin@example.com', '$2b$10$example_hash_please_replace', '管理员', 'admin')
+('admin', 'admin@example.com', '$2b$10$4hwdGshxCicN8a0F1cY7jek93DSXPIr53w864bay7DJd6uSjTmL4y', '管理员', 'admin')
 ON DUPLICATE KEY UPDATE `username` = `username`;
 
--- 插入示例分类
+-- 示例分类
 INSERT INTO `categories` (`name`, `slug`, `description`, `sort`) VALUES
 ('技术', 'tech', '技术相关文章', 1),
 ('生活', 'life', '生活随笔', 2),
 ('读书', 'reading', '读书笔记', 3)
 ON DUPLICATE KEY UPDATE `name` = `name`;
 
--- 插入示例标签
+-- 示例标签
 INSERT INTO `tags` (`name`, `slug`, `color`) VALUES
 ('JavaScript', 'javascript', '#f7df1e'),
 ('React', 'react', '#61dafb'),
@@ -125,11 +143,13 @@ INSERT INTO `tags` (`name`, `slug`, `color`) VALUES
 ('前端', 'frontend', '#e34c26')
 ON DUPLICATE KEY UPDATE `name` = `name`;
 
+-- 欢迎文章
+INSERT INTO `articles` (`title`, `slug`, `content`, `excerpt`, `status`, `authorId`, `categoryId`, `createdAt`, `updatedAt`) VALUES
+('欢迎使用 MD Blog', 'welcome-to-md-blog', '# 欢迎使用 MD Blog\n\n这是一个基于 Egg.js + React + MySQL + Markdown 的现代化博客系统。\n\n## 特性\n\n- 支持 Markdown 编辑\n- 分类和标签\n- 评论系统\n- 全文搜索\n\n开始你的博客之旅吧！', '欢迎使用 MD Blog，这是一个现代化的博客系统。', 'published', 1, 1, NOW(), NOW())
+ON DUPLICATE KEY UPDATE `title` = `title`;
+
 -- ============================================================
 -- AI 智能客服相关表
--- 注意：Sequelize 模型使用 camelCase 时间戳（createdAt/updatedAt），
---       因此以下表按 createdAt/updatedAt 建列（与上方旧表写法不同）。
--- 推荐直接使用 `npm run init-db` 初始化，本文件供手动建表参考。
 -- ============================================================
 
 -- 会话表

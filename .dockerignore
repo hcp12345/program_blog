@@ -1,0 +1,60 @@
+# ==================== 依赖 ====================
+node_modules
+frontend/node_modules
+**/node_modules
+
+# ==================== 构建产物 / 运行时目录 ====================
+frontend/dist
+dist
+build
+logs
+log
+run
+tmp
+coverage
+.nyc_output
+
+# ==================== 前端（后端镜像不需要，单独用 frontend/Dockerfile 构建）====================
+frontend
+
+# ==================== 遗留 Java 工程（与本服务无关）====================
+src
+test
+pom.xml
+mvnw
+mvnw.cmd
+.mvn
+target
+
+# ==================== 类型声明 / 文档 / 杂项 ====================
+typings
+docs
+*.md
+CLAUDE.md
+claude_yolo.json
+
+# ==================== 版本控制与编辑器 ====================
+.git
+.gitignore
+.gitattributes
+.vscode
+.idea
+*.iml
+*.iws
+.workbuddy
+
+# ==================== 本地敏感配置（禁止打进镜像）====================
+config/config.local.js
+.env
+.env.*
+
+# ==================== Docker 自身 ====================
+Dockerfile
+Dockerfile.*
+docker-compose.yml
+docker-compose.*.yml
+.dockerignore
+
+# ==================== 其他 ====================
+*.log
+.DS_Store

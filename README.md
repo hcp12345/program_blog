@@ -2,7 +2,7 @@
 
 基于 Egg.js + React (Vite) + MySQL + Markdown 的现代化个人博客系统。
 
-> 📚 **完整文档** 见 [docs/](./docs) 目录：[架构设计](./docs/architecture.md) · [API 接口文档](./docs/api.md) · [数据库设计](./docs/database.md) · [开发指南](./docs/development.md)
+> 📚 **完整文档** 见 [docs/](./docs) 目录：[架构设计](./docs/architecture.md) · [API 接口文档](./docs/api.md) · [数据库设计](./docs/database.md) · [开发指南](./docs/development.md) · [Docker 部署](./docs/docker.md)
 
 ## ✨ 功能特性
 
@@ -19,7 +19,24 @@
 
 ## 🚀 快速开始
 
-### 环境要求
+### 🐳 Docker 一键启动（推荐，无需安装 Node / MySQL）
+
+```bash
+cp .env.example .env        # 按需修改数据库密码 / 端口 / AI Key
+docker compose up -d --build
+```
+
+启动完成后访问：
+
+- 前台 / 后台：<http://localhost:8080> 、<http://localhost:8080/admin>
+- API / 健康检查：<http://localhost:8080/api/v1> 、<http://localhost:8080/health>
+
+编排包含 **MySQL + 后端 + 前端** 三个服务，数据库在首次启动时自动建表并写入初始数据。
+完整说明（环境变量、数据备份、常见问题）见 **[docs/docker.md](./docs/docker.md)**。
+
+---
+
+### 本地开发（Node + MySQL）：环境要求
 
 - Node.js >= 18.0.0
 - MySQL >= 5.7
@@ -152,8 +169,13 @@ program_blog/
 │       └── services/
 │           └── api.js          # axios 封装 + 各资源 API + SSE 流式对话
 ├── init-db.js                  # 数据库初始化脚本
-├── database.sql                # 建库建表 SQL
+├── database.sql                # 建库建表 SQL（Docker 首次启动自动执行）
 ├── dev.bat / dev.sh            # Windows / Linux-Mac 启动脚本
+├── Dockerfile                  # 后端镜像（Egg.js）
+├── docker-compose.yml          # 一键编排：MySQL + 后端 + 前端
+├── .env.example                # Docker 环境变量模板
+├── frontend/Dockerfile         # 前端镜像（Vite 构建 + Nginx）
+├── frontend/nginx.conf         # Nginx 站点配置（静态托管 + API 反代）
 └── docs/                       # 项目文档
 ```
 
@@ -272,11 +294,21 @@ console.log('Hello World');
 
 ## 🏗️ 生产部署
 
-### 后端部署
+### 🐳 Docker 部署（推荐）
 
 ```bash
-npm start    # egg-scripts 守护进程启动
-npm run stop # 停止
+cp .env.example .env        # 修改数据库密码 / 密钥 / AI Key
+docker compose up -d --build
+```
+
+一键拉起 MySQL + 后端 + 前端，完整说明见 **[docs/docker.md](./docs/docker.md)**。
+
+### 后端部署（非 Docker）
+
+```bash
+npm start             # egg-scripts 启动（前台控制台模式，日志直接可见）
+npm run start:daemon  # 需要后台常驻时使用
+npm run stop          # 停止后台实例
 ```
 
 > ⚠️ 上线前必须：更换 `config.keys` 与 `config.jwt.secret`（当前为默认值）、修改数据库密码、收紧 CORS（当前为 `*`）、设置 `ZHIPU_API_KEY`。
@@ -317,7 +349,7 @@ server {
 
 ## 📋 待办事项
 
-- [ ] 生产环境配置抽离（密钥、数据库密码等，改用环境变量 / config.prod.js）
+- [x] 生产环境配置抽离（已支持环境变量注入 `DB_*` / `APP_KEYS` / `JWT_SECRET`，并提供 Docker 一键部署）
 - [ ] 文章草稿自动保存
 - [ ] 图片上传功能
 - [ ] RSS 订阅

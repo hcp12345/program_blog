@@ -11,8 +11,19 @@ MD Blog（个人博客系统）的完整文档索引。技术栈：**Egg.js + Re
 | [数据库设计](./database.md) | 表结构、字段说明、模型关联关系（ER 图） |
 | [开发指南](./development.md) | 环境搭建、日常开发流程、测试、生产部署、常见问题 |
 | [AI 智能客服方案](./ai-agent.md) | AI Agent 技术选型、架构设计、实施计划（**已实施并验证**） |
+| [Docker 部署指南](./docker.md) | 一键启动（MySQL + 后端 + 前端）、环境变量、数据备份、生产注意事项 |
 
 ## 🚀 快速上手（TL;DR）
+
+**方式一：Docker 一键启动（无需安装 Node / MySQL）**
+
+```bash
+cp .env.example .env          # 按需修改数据库密码 / 端口 / AI Key
+docker compose up -d --build
+# 访问 http://localhost:8080
+```
+
+**方式二：本地开发**
 
 ```bash
 # 1. 安装依赖
@@ -39,7 +50,7 @@ npm run dev:all
 - **想了解代码怎么组织的** → 先看 [架构设计](./architecture.md)
 - **要对接接口 / 写前端调用** → 看 [API 接口文档](./api.md)
 - **要加字段 / 改表结构** → 看 [数据库设计](./database.md)
-- **要跑起来 / 上线** → 看 [开发指南](./development.md)
+- **要跑起来 / 上线** → 看 [开发指南](./development.md)；想一键起全套（含数据库）看 [Docker 部署](./docker.md)
 
 ## ⚠️ 关于仓库中的 `src/` 与 `pom.xml`
 
