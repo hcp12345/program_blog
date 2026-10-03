@@ -21,6 +21,7 @@
     "mysql2": "^3.16.2"
   },
   "devDependencies": {
+    "concurrently": "^9.1.0",
     "egg-bin": "6",
     "egg-mock": "5",
     "eslint": "8",
@@ -30,7 +31,8 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-md-me",
+    "start": "egg-scripts start --title=egg-server-md-me",
+    "start:daemon": "egg-scripts start --daemon --title=egg-server-md-me",
     "stop": "egg-scripts stop --title=egg-server-md-me",
     "dev": "egg-bin dev",
     "dev:all": "concurrently \"npm run dev\" \"cd frontend && npm run dev\" --names \"backend,frontend\" --prefix-colors \"blue,green\"",

@@ -66,6 +66,24 @@ module.exports = appInfo => {
     expiresIn: '7d',
   };
 
+  // AI 智能客服（LLM）配置
+  // 默认使用智谱 GLM（OpenAI 兼容协议），备选通义千问：改 baseURL + apiKey 环境变量即可
+  config.llm = {
+    baseURL: process.env.LLM_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4',
+    apiKey: process.env.ZHIPU_API_KEY || '', // 密钥请通过环境变量 ZHIPU_API_KEY 或 config/config.local.js 注入，勿提交
+    model: process.env.LLM_MODEL || 'glm-4-flash',
+    temperature: 0.7,
+    maxTokens: 2048,
+    timeout: 90000,
+    maxToolRounds: 5, // 单次对话最大工具调用轮数，防死循环
+  };
+
+  // 智能客服默认配置（实际值存 chat_settings 表，后台可调）
+  config.chat = {
+    defaultRateLimitPerIpPerDay: 50,
+    defaultDraftPublishMode: 'manual', // manual 人工确认 / auto 自动发布
+  };
+
   // add your user config here
   const userConfig = {
     // myAppName: 'egg',

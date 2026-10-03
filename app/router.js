@@ -52,6 +52,15 @@ module.exports = app => {
   router.put('/api/v1/users/profile', controller.user.updateProfile);
   router.put('/api/v1/users/password', controller.user.changePassword);
 
+  // AI 智能客服路由
+  router.post('/api/v1/chat', controller.chat.chat); // SSE 流式对话
+  router.get('/api/v1/chat/settings', controller.chat.getSettings); // 配置（管理员）
+  router.put('/api/v1/chat/settings', controller.chat.updateSettings); // 修改配置（管理员）
+  router.get('/api/v1/chat/admin/sessions', controller.chat.adminSessions); // 客服质检（管理员）
+  router.get('/api/v1/chat/sessions', controller.chat.sessions);
+  router.get('/api/v1/chat/sessions/:id/messages', controller.chat.messages);
+  router.delete('/api/v1/chat/sessions/:id', controller.chat.destroySession);
+
   // 健康检查
   router.get('/health', ctx => {
     ctx.body = { status: 'ok', timestamp: new Date().toISOString() };

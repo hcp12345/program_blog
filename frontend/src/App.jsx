@@ -12,6 +12,9 @@ import ArticleManagement from './pages/admin/ArticleManagement';
 import CategoryManagement from './pages/admin/CategoryManagement';
 import TagManagement from './pages/admin/TagManagement';
 import CommentManagement from './pages/admin/CommentManagement';
+import AssistantPage from './pages/admin/AssistantPage';
+import ChatSettings from './pages/admin/ChatSettings';
+import ChatQuality from './pages/admin/ChatQuality';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -48,6 +51,9 @@ function App() {
         <Route path="categories" element={<CategoryManagement />} />
         <Route path="tags" element={<TagManagement />} />
         <Route path="comments" element={<CommentManagement />} />
+        <Route path="assistant" element={<AssistantPage />} />
+        <Route path="chat-settings" element={<ChatSettings />} />
+        <Route path="chat-quality" element={<ChatQuality />} />
       </Route>
 
       {/* 404 页面 */}

@@ -129,7 +129,16 @@ class UserController extends Controller {
       }
 
       // 验证密码
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      // 兼容历史数据：早期 init-db 写入的是明文密码，校验通过后自动升级为 bcrypt 哈希
+      let isPasswordValid = false;
+      if (typeof user.password === 'string' && user.password.startsWith('$2')) {
+        isPasswordValid = await bcrypt.compare(password, user.password);
+      } else if (user.password === password) {
+        isPasswordValid = true;
+        await user.update({ password: await bcrypt.hash(password, 10) });
+        ctx.logger.info('[user] 用户 %s 的明文密码已自动升级为 bcrypt 哈希', user.username);
+      }
+
       if (!isPasswordValid) {
         ctx.body = {
           success: false,

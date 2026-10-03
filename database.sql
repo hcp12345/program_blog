@@ -124,3 +124,53 @@ INSERT INTO `tags` (`name`, `slug`, `color`) VALUES
 ('Node.js', 'nodejs', '#68a063'),
 ('前端', 'frontend', '#e34c26')
 ON DUPLICATE KEY UPDATE `name` = `name`;
+
+-- ============================================================
+-- AI 智能客服相关表
+-- 注意：Sequelize 模型使用 camelCase 时间戳（createdAt/updatedAt），
+--       因此以下表按 createdAt/updatedAt 建列（与上方旧表写法不同）。
+-- 推荐直接使用 `npm run init-db` 初始化，本文件供手动建表参考。
+-- ============================================================
+
+-- 会话表
+CREATE TABLE IF NOT EXISTS `chat_sessions` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `userId` INT(11) DEFAULT NULL COMMENT '用户ID，游客为 NULL',
+  `ip` VARCHAR(50) DEFAULT NULL COMMENT '访客 IP，用于限流与质检溯源',
+  `title` VARCHAR(200) DEFAULT '新对话',
+  `createdAt` DATETIME DEFAULT NULL,
+  `updatedAt` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId` (`userId`),
+  KEY `ip` (`ip`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 消息表（含工具调用记录，作为客服质检数据长期保留）
+CREATE TABLE IF NOT EXISTS `chat_messages` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `sessionId` INT(11) NOT NULL,
+  `role` VARCHAR(20) NOT NULL COMMENT 'user / assistant / tool',
+  `content` TEXT DEFAULT NULL,
+  `toolName` VARCHAR(50) DEFAULT NULL,
+  `toolArgs` JSON DEFAULT NULL,
+  `tokens` INT(11) DEFAULT 0,
+  `createdAt` DATETIME DEFAULT NULL,
+  `updatedAt` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sessionId` (`sessionId`),
+  KEY `createdAt` (`createdAt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 智能客服配置表
+CREATE TABLE IF NOT EXISTS `chat_settings` (
+  `key` VARCHAR(50) NOT NULL,
+  `value` VARCHAR(200) NOT NULL,
+  `createdAt` DATETIME DEFAULT NULL,
+  `updatedAt` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `chat_settings` (`key`, `value`) VALUES
+('rate_limit_per_ip_per_day', '50'),
+('draft_publish_mode', 'manual')
+ON DUPLICATE KEY UPDATE `value` = `value`;

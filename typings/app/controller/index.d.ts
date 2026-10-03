@@ -5,6 +5,7 @@
 import 'egg';
 import ExportArticle = require('../../../app/controller/article');
 import ExportCategory = require('../../../app/controller/category');
+import ExportChat = require('../../../app/controller/chat');
 import ExportComment = require('../../../app/controller/comment');
 import ExportHome = require('../../../app/controller/home');
 import ExportSearch = require('../../../app/controller/search');
@@ -15,6 +16,7 @@ declare module 'egg' {
   interface IController {
     article: ExportArticle;
     category: ExportCategory;
+    chat: ExportChat;
     comment: ExportComment;
     home: ExportHome;
     search: ExportSearch;

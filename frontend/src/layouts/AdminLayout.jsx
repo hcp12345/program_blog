@@ -48,6 +48,28 @@ function AdminLayout() {
           >
             新建文章
           </Link>
+
+          <div className="px-6 pt-5 pb-2 text-xs uppercase tracking-wider text-gray-500">
+            AI 智能客服
+          </div>
+          <Link
+            to="/admin/assistant"
+            className="block px-6 py-3 hover:bg-gray-800 transition"
+          >
+            AI 助手
+          </Link>
+          <Link
+            to="/admin/chat-settings"
+            className="block px-6 py-3 hover:bg-gray-800 transition"
+          >
+            智能客服配置
+          </Link>
+          <Link
+            to="/admin/chat-quality"
+            className="block px-6 py-3 hover:bg-gray-800 transition"
+          >
+            客服质检
+          </Link>
         </nav>
         {/* 用户信息 */}
         <div className="p-4 border-t border-gray-700">

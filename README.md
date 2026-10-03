@@ -1,22 +1,21 @@
-<<<<<<< HEAD
-# program_blog
-IT博客系统
-=======
 # MD Blog - 个人博客系统
 
 基于 Egg.js + React (Vite) + MySQL + Markdown 的现代化个人博客系统。
 
+> 📚 **完整文档** 见 [docs/](./docs) 目录：[架构设计](./docs/architecture.md) · [API 接口文档](./docs/api.md) · [数据库设计](./docs/database.md) · [开发指南](./docs/development.md)
+
 ## ✨ 功能特性
 
-- ✅ **文章管理** - 创建、编辑、删除、发布文章
-- ✅ **Markdown 编辑** - 支持 GitHub Flavored Markdown，代码高亮
-- ✅ **分类系统** - 多级分类管理
-- ✅ **标签系统** - 文章标签归类
-- ✅ **评论系统** - 支持嵌套回复和评论审核
-- ✅ **全文搜索** - 文章标题和内容搜索
-- ✅ **点赞统计** - 文章点赞、浏览量统计
-- ✅ **响应式设计** - 适配各种设备
-- ✅ **管理后台** - 完整的后台管理系统
+- ✅ **文章管理** - 创建、编辑、删除、批量删除、发布、置顶文章
+- ✅ **Markdown 编辑** - 支持 GitHub Flavored Markdown，服务端（marked + highlight.js）与客户端（react-markdown）双重渲染
+- ✅ **分类系统** - 支持多级分类（parentId 自关联）
+- ✅ **标签系统** - 文章标签多对多关联，支持自定义颜色
+- ✅ **评论系统** - 游客评论、嵌套回复、审核流转（待审核/通过/拒绝）、点赞
+- ✅ **用户系统** - 注册 / 登录（JWT + bcrypt）、个人资料与密码管理
+- ✅ **管理后台** - 文章 / 分类 / 标签 / 评论管理，登录保护（前端路由守卫 + 后端强制鉴权）
+- ✅ **AI 智能客服** - 接入智谱 GLM，前台右下角对话找文章，后台可对话查统计、生成文章；支持按 IP 限流、发布模式配置、对话质检
+- ✅ **全文搜索** - 标题、内容、摘要模糊搜索 + 热门文章榜单
+- ✅ **响应式设计** - 基于 TailwindCSS
 
 ## 🚀 快速开始
 
@@ -47,7 +46,7 @@ config.sequelize = {
   port: 3306,
   database: 'md_me_blog',
   username: 'root',
-  password: 'your_password',  // 修改为你的 MySQL 密码
+  password: '123456',  // 修改为你的 MySQL 密码
   // ...
 };
 ```
@@ -58,11 +57,22 @@ config.sequelize = {
 npm run init-db
 ```
 
-这将创建数据库、表结构并插入示例数据。
+这将创建数据库、表结构并插入示例数据（⚠️ 会清空现有数据）。示例管理员账号：`admin / admin123`。
 
 ### 4. 启动开发环境
 
-#### 方式一：分别启动
+#### 方式一：一键启动（推荐）
+
+```bash
+npm run dev:all   # concurrently 同时启动前后端
+```
+
+#### 方式二：使用启动脚本
+
+- Windows: `dev.bat`
+- Linux/Mac: `./dev.sh`
+
+#### 方式三：分别启动
 
 ```bash
 # 终端 1 - 启动后端服务
@@ -73,136 +83,171 @@ cd frontend
 npm run dev
 ```
 
-#### 方式二：使用启动脚本
-
-- Windows: `dev.bat`
-- Linux/Mac: `./dev.sh`
-
 ### 5. 访问应用
 
 - **前台页面**: http://localhost:3000
 - **后台管理**: http://localhost:3000/admin
-- **后端 API**: http://localhost:7001
+- **后端 API**: http://localhost:7001/api/v1
+- **健康检查**: http://localhost:7001/health
+
+### 6. 启用 AI 智能客服（可选）
+
+前端浮窗与后台「AI 助手」需要配置智谱开放平台的 API Key：
+
+```bash
+# Windows PowerShell
+$env:ZHIPU_API_KEY="你的Key"; npm run dev:all
+# Linux / macOS
+export ZHIPU_API_KEY="你的Key" && npm run dev:all
+```
+
+默认使用免费模型 `glm-4-flash`。未配置 Key 时其他功能不受影响，仅对话会提示「智能客服尚未配置」。
+限流阈值与文章发布模式可在后台「智能客服配置」中调整。详见 [docs/ai-agent.md](./docs/ai-agent.md)。
 
 ## 📁 项目结构
 
 ```
-md-me/
-├── app/                    # 后端应用目录
-│   ├── controller/         # 控制器
-│   │   ├── article.js      # 文章控制器
-│   │   ├── category.js     # 分类控制器
-│   │   ├── comment.js      # 评论控制器
-│   │   ├── search.js       # 搜索控制器
-│   │   └── tag.js          # 标签控制器
-│   ├── model/             # 数据模型
-│   │   ├── article.js      # 文章模型
-│   │   ├── category.js     # 分类模型
-│   │   ├── comment.js      # 评论模型
-│   │   ├── tag.js          # 标签模型
-│   │   └── user.js         # 用户模型
-│   ├── service/           # 服务层
-│   └── middleware/        # 中间件
-├── config/                # 配置文件
-│   ├── config.default.js  # 应用配置
-│   ├── plugin.js          # 插件配置
-│   └── router.js          # 路由配置
-├── frontend/              # 前端应用
-│   ├── src/
-│   │   ├── components/    # 组件
-│   │   │   ├── Header.jsx
-│   │   │   ├── Footer.jsx
-│   │   │   └── SearchBar.jsx
-│   │   ├── pages/         # 页面
-│   │   │   ├── HomePage.jsx
-│   │   │   ├── ArticleDetailPage.jsx
-│   │   │   ├── ArticleListPage.jsx
-│   │   │   ├── ArticleEditor.jsx
-│   │   │   ├── SearchPage.jsx
-│   │   │   └── admin/     # 管理后台页面
-│   │   ├── layouts/       # 布局
-│   │   │   ├── MainLayout.jsx
-│   │   │   └── AdminLayout.jsx
-│   │   ├── services/      # API 服务
-│   │   │   └── api.js
-│   │   ├── App.jsx        # 应用入口
-│   │   └── main.jsx
-│   ├── package.json
-│   └── vite.config.js
-├── init-db.js            # 数据库初始化脚本
-├── database.sql          # 数据库 SQL 文件
-├── README.md
-├── dev.bat               # Windows 启动脚本
-└── dev.sh                # Linux/Mac 启动脚本
+program_blog/
+├── app/                        # 后端应用目录（Egg.js 约定）
+│   ├── controller/             # 控制器（业务逻辑在此层）
+│   │   ├── article.js          # 文章 CRUD / slug 查询 / 点赞 / 批量删除
+│   │   ├── category.js         # 分类 CRUD
+│   │   ├── comment.js          # 评论 CRUD / 审核 / 点赞
+│   │   ├── search.js           # 全文搜索 / 热门文章
+│   │   ├── tag.js              # 标签 CRUD
+│   │   ├── user.js             # 注册 / 登录 / 资料 / 密码
+│   │   ├── chat.js             # AI 客服：SSE 对话 / 会话 / 限流 / 配置 / 质检
+│   │   └── home.js             # 默认欢迎页
+│   ├── model/                  # Sequelize 模型
+│   │   ├── article.js          # 文章（关联分类/标签/评论/作者）
+│   │   ├── category.js         # 分类（支持多级）
+│   │   ├── tag.js              # 标签（多对多）
+│   │   ├── comment.js          # 评论（嵌套自关联）
+│   │   ├── user.js             # 用户
+│   │   └── chatSession.js / chatMessage.js / chatSetting.js  # AI 客服三表
+│   ├── service/
+│   │   ├── agent.js            # Agent 循环（智谱 GLM 流式 + 工具调用）
+│   │   └── agentTools.js       # 工具注册表（按角色下发）
+│   └── middleware/
+│       └── jwt_auth.js         # JWT 解析 + 写操作强制鉴权（含游客白名单）
+├── config/
+│   ├── config.default.js       # 应用配置（数据库/CORS/JWT/LLM/中间件）
+│   └── plugin.js               # Egg 插件开关（sequelize/cors/validate/jwt）
+├── app/router.js               # 路由注册（所有 /api/v1 端点）
+├── frontend/                   # 前端应用（React 19 + Vite）
+│   └── src/
+│       ├── App.jsx             # 路由表
+│       ├── components/         # Header / Footer / SearchBar / ProtectedRoute
+│       │                       # ChatWidget（浮窗） / ChatPanel（对话面板）
+│       ├── contexts/
+│       │   └── AuthContext.jsx # 全局登录态（localStorage 持久化）
+│       ├── layouts/            # MainLayout（前台）/ AdminLayout（后台）
+│       ├── pages/
+│       │   ├── HomePage.jsx / ArticleListPage.jsx / ArticleDetailPage.jsx
+│       │   ├── ArticleEditor.jsx / SearchPage.jsx
+│       │   ├── LoginPage.jsx / RegisterPage.jsx
+│       │   └── admin/          # ArticleManagement / CategoryManagement
+│       │                       # TagManagement / CommentManagement
+│       │                       # AssistantPage（AI 助手）/ ChatSettings / ChatQuality
+│       └── services/
+│           └── api.js          # axios 封装 + 各资源 API + SSE 流式对话
+├── init-db.js                  # 数据库初始化脚本
+├── database.sql                # 建库建表 SQL
+├── dev.bat / dev.sh            # Windows / Linux-Mac 启动脚本
+└── docs/                       # 项目文档
 ```
+
+> ℹ️ 仓库根目录的 `src/`、`pom.xml`、`mvnw` 是早期 Java (Spring Boot) 版本的遗留代码，与当前系统无关，可忽略。
 
 ## 🎨 技术栈
 
 ### 后端
-- **Egg.js** - 企业级 Node.js 框架
-- **MySQL** - 关系型数据库
-- **Sequelize** - ORM 框架
-- **Marked + Highlight.js** - Markdown 解析和代码高亮
-- **Egg-CORS** - 跨域支持
-- **Egg-Validate** - 参数验证
+- **Egg.js 3** - 企业级 Node.js 框架
+- **MySQL**（mysql2 驱动）- 关系型数据库
+- **egg-sequelize** - ORM 框架
+- **egg-jwt + jsonwebtoken + bcryptjs** - JWT 认证与密码加密
+- **Marked + Highlight.js** - 服务端 Markdown 解析和代码高亮
+- **egg-cors / egg-validate** - 跨域支持 / 参数验证
 
 ### 前端
-- **React 18** - UI 框架
-- **Vite** - 快速构建工具
-- **React Router** - 路由管理
-- **Axios** - HTTP 客户端
-- **TailwindCSS** - 样式框架
-- **React Markdown** - Markdown 渲染
+- **React 19** - UI 框架
+- **Vite 7** - 快速构建工具
+- **React Router 7** - 路由管理
+- **Axios** - HTTP 客户端（统一封装于 `services/api.js`）
+- **TailwindCSS 3** - 原子化样式
+- **react-markdown**（remark-gfm / remark-breaks / remark-directive + rehype-highlight / rehype-raw / rehype-sanitize）- Markdown 渲染管线
+- **@mdxeditor/editor** - 富文本式 Markdown 编辑器
+
+### AI 智能客服
+- **智谱 GLM**（OpenAI 兼容接口，默认免费模型 `glm-4-flash`，备选通义千问）- 对话与函数调用
+- **Function Calling** - 工具复用站内业务逻辑（搜索文章、统计、建文章等），非直接操作数据库
+- **SSE** - 服务端推送流式回答
+- **会话存储** - MySQL 三表（chat_sessions / chat_messages / chat_settings）
 
 ## 🔌 API 接口
 
+完整文档（含请求/响应示例）见 [docs/api.md](./docs/api.md)，以下为端点速览。
+
 ### 文章相关
-- `GET /api/v1/articles` - 获取文章列表
-- `GET /api/v1/articles/:id` - 获取文章详情
+- `GET /api/v1/articles` - 获取文章列表（分页，默认只返回已发布）
+- `GET /api/v1/articles/hot` - 热门文章 Top 10
 - `GET /api/v1/articles/slug/:slug` - 根据 slug 获取文章
+- `GET /api/v1/articles/:id` - 获取文章详情
 - `POST /api/v1/articles` - 创建文章
+- `POST /api/v1/articles/batch-delete` - 批量删除文章
 - `PUT /api/v1/articles/:id` - 更新文章
 - `DELETE /api/v1/articles/:id` - 删除文章
 - `POST /api/v1/articles/:id/like` - 点赞文章
 
 ### 分类相关
 - `GET /api/v1/categories` - 获取所有分类
-- `GET /api/v1/categories/:id` - 获取分类详情
-- `POST /api/v1/categories` - 创建分类
-- `PUT /api/v1/categories/:id` - 更新分类
-- `DELETE /api/v1/categories/:id` - 删除分类
+- `GET /api/v1/categories/slug/:slug` / `GET /api/v1/categories/:id` - 分类详情
+- `POST /api/v1/categories` / `PUT /api/v1/categories/:id` / `DELETE /api/v1/categories/:id` - 分类写操作
 
 ### 标签相关
 - `GET /api/v1/tags` - 获取所有标签
-- `GET /api/v1/tags/:id` - 获取标签详情
-- `POST /api/v1/tags` - 创建标签
-- `PUT /api/v1/tags/:id` - 更新标签
-- `DELETE /api/v1/tags/:id` - 删除标签
+- `GET /api/v1/tags/slug/:slug` / `GET /api/v1/tags/:id` - 标签详情
+- `POST /api/v1/tags` / `PUT /api/v1/tags/:id` / `DELETE /api/v1/tags/:id` - 标签写操作
 
 ### 评论相关
-- `GET /api/v1/comments` - 获取评论列表
-- `GET /api/v1/comments/:id` - 获取评论详情
-- `POST /api/v1/comments` - 创建评论
-- `PUT /api/v1/comments/:id` - 更新评论状态
+- `GET /api/v1/comments` - 评论列表（支持 articleId、status 筛选）
+- `GET /api/v1/comments/:id` - 评论详情（含父评论与回复）
+- `POST /api/v1/comments` - 创建评论（默认待审核）
+- `PUT /api/v1/comments/:id` - 更新评论（审核流转）
 - `DELETE /api/v1/comments/:id` - 删除评论
+- `POST /api/v1/comments/:id/like` - 点赞评论
 
 ### 搜索相关
-- `GET /api/v1/search?keyword=xxx` - 搜索文章
-- `GET /api/v1/articles/hot` - 获取热门文章
+- `GET /api/v1/search?keyword=xxx` - 搜索已发布文章
+- `GET /api/v1/articles/hot` - 热门文章
+
+### 用户相关
+- `POST /api/v1/users/register` - 注册（bcrypt 加密）
+- `POST /api/v1/users/login` - 登录（支持用户名或邮箱），返回 JWT
+- `GET /api/v1/users/me` - 当前登录用户
+- `PUT /api/v1/users/profile` - 修改资料
+- `PUT /api/v1/users/password` - 修改密码
+
+### 其他
+- `GET /health` - 健康检查
+
+### AI 智能客服相关
+- `POST /api/v1/chat` - 发送消息（SSE 流式返回，游客可用，按 IP 限流）
+- `GET /api/v1/chat/sessions` - 我的会话列表
+- `GET /api/v1/chat/sessions/:id/messages` - 会话消息记录
+- `DELETE /api/v1/chat/sessions/:id` - 删除会话
+- `GET /api/v1/chat/settings` / `PUT /api/v1/chat/settings` - 智能客服配置（管理员）
+- `GET /api/v1/chat/admin/sessions` - 客服质检：全量会话检索（管理员）
 
 ## 📝 开发指南
 
 ### 添加新功能
 
-1. **后端** - 在 `app/controller/` 中添加控制器，在 `app/model/` 中添加模型
-2. **前端** - 在 `frontend/src/pages/` 中添加页面，在 `frontend/src/components/` 中添加组件
-3. **路由** - 在 `config/router.js` 和 `frontend/src/App.jsx` 中配置路由
+1. **后端** - 在 `app/model/` 添加模型，`app/controller/` 添加控制器（RESTful 方法名：`index/show/create/update/destroy`），在 `app/router.js` 注册路由（固定路径需放在 `:id` 参数路径**之前**）
+2. **前端** - 在 `frontend/src/pages/` 添加页面，在 `frontend/src/App.jsx` 配置路由，API 调用统一封装到 `frontend/src/services/api.js`
+3. **数据库** - 变更表结构时：模型 → `init-db.js` → 重新 `npm run init-db`（会清空数据，注意备份）
 
-### 数据库迁移
-
-修改数据库结构后：
-1. 更新 `init-db.js` 中的表定义
-2. 运行 `npm run init-db` 重新初始化数据库
+更多细节见 [docs/development.md](./docs/development.md)。
 
 ### Markdown 编辑
 
@@ -230,8 +275,11 @@ console.log('Hello World');
 ### 后端部署
 
 ```bash
-npm start
+npm start    # egg-scripts 守护进程启动
+npm run stop # 停止
 ```
+
+> ⚠️ 上线前必须：更换 `config.keys` 与 `config.jwt.secret`（当前为默认值）、修改数据库密码、收紧 CORS（当前为 `*`）、设置 `ZHIPU_API_KEY`。
 
 ### 前端构建
 
@@ -269,7 +317,7 @@ server {
 
 ## 📋 待办事项
 
-- [ ] 用户认证和权限管理
+- [ ] 生产环境配置抽离（密钥、数据库密码等，改用环境变量 / config.prod.js）
 - [ ] 文章草稿自动保存
 - [ ] 图片上传功能
 - [ ] RSS 订阅
@@ -277,6 +325,12 @@ server {
 - [ ] 暗色主题
 - [ ] 实时 Markdown 预览
 - [ ] 文章导入/导出
+- [ ] 智能客服：会话标题自动生成、回答中内嵌文章引用卡片
+- [ ] 文章量增长后为智能客服引入向量检索（RAG）
+
+## 🧹 遗留代码
+
+根目录下的 `src/`（Java 源码）、`pom.xml`、`mvnw`、`.mvn/` 等属于早期 Spring Boot + MyBatis 版本，已被 Egg.js 方案取代，确认无用后可删除。
 
 ## 📄 许可证
 
@@ -289,4 +343,3 @@ MIT
 ---
 
 **Enjoy your blogging! 🚀**
->>>>>>> 605e55f86098a267201578ad64915999ae6eca31

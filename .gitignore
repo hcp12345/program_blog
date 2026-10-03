@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+### Java（遗留 Spring Boot 工程）###
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -30,7 +30,7 @@ build/
 
 ### VS Code ###
 .vscode/
-=======
+
 # ==================== Node.js ====================
 node_modules/
 npm-debug.log*
@@ -58,6 +58,8 @@ coverage/
 .env
 .env.*.local
 .env.*.local.*
+# 本地私有配置（含密钥等，禁止提交）
+config/config.local.js
 
 # ==================== 前端 (React + Vite) ====================
 frontend/node_modules/
@@ -140,4 +142,6 @@ yarn-error.log*
 node_modules/
 .npm/
 .eslintcache
->>>>>>> 605e55f86098a267201578ad64915999ae6eca31
+
+# ==================== 工作助手本地数据 ====================
+.workbuddy/

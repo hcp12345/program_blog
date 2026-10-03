@@ -154,7 +154,7 @@ class ArticleController extends Controller {
       excerpt: excerpt || content.substring(0, 200),
       coverImage,
       categoryId,
-      authorId: 1, // TODO: 从 session 获取当前用户
+      authorId: ctx.state.user ? ctx.state.user.userId : 1, // 从 JWT 解析当前用户
       status,
     });
 
